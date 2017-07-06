@@ -1,0 +1,8 @@
+{
+    "name": "myvendor/myapp",
+    "require": {
+        "php": ">=5.1.0",
+        "yiisoft/yii": "1.1.*",
+        "phpoffice/phpword": "^0.13.0"
+    }
+}
