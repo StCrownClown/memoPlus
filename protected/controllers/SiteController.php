@@ -13,7 +13,6 @@ class SiteController extends Controller {
     public function actionIndex() {
         Yii::app()->user->role = 'admin';
         var_dump(Yii::app()->user->role);
-//        echo $_SESSION['id'].'sssss';
 //        Yii::app()->user->id = $_SESSION['EMPLOYEEID'];
 //        Yii::app()->user->name = $_SESSION['GIVENNAMEENGLISH'];
 //        Yii::app()->user->surname = $_SESSION['FAMILYNAMEENGLISH'];

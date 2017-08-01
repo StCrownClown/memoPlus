@@ -5,13 +5,12 @@ $data = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
     return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UCS-2BE');
 }, $data);
 
-echo '<textarea name="hidden_json" id="select_json" style="display:none;">' . $data . '</textarea>';
+echo '<textarea name="hidden_json" id="select_json" style="display:none;" >' . $data . '</textarea>';
 
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl . '/bootstrap-timepicker/js/bootstrap-timepicker.min.js');
 $cs->registerCssFile($baseUrl . '/bootstrap-timepicker/css/bootstrap-timepicker.min.css');
-
 
 echo '<h4>' . $model->Name . '</h2><br/><br/>';
 
@@ -85,17 +84,89 @@ echo file_get_contents("myfile/" . $model->FilesID . '_edit.html');
 </div>
 
 <style>
-    .bootstrap-timepicker-widget table td input{width: 35px;}
+    .bootstrap-timepicker-widget table td input{width: 120px;}
+    .test {width: 100px;}
 </style>
 
 <script>
 
+    $( '<span style="display:none"></span>' ).insertAfter("input[id*=VALUE i]");
+    $( '<span style="display:none"></span>' ).insertAfter("input[id*=NUMTEXT i]");
+
+    var box_id = document.activeElement.id;
+
+    $('#' +box_id).each(function () {
+        var $text = $(this);
+        resizeInputs($text);
+    });
+
+    $('#' +box_id).on('keypress blur', function () {
+        var $text = $(this);
+        resizeInputs($text);
+    });
+
+    $('#' +box_id).on('blur', function () {
+        var $text = $(this).val().replace(/\s+/g, ' ');
+        $(this).val($text);
+    });
+
+    function resizeInputs($text) {
+        var text = $text.val().replace(/\s+/g, ' '),
+                placeholder = $text.attr('placeholder'),
+                span = $text.next('span');
+        span.text(placeholder);
+        var width = span.width();
+
+        if (text !== '') {
+            span.text(text);
+            var width = span.width();
+            $text.css('width', width + 5);
+        }
+        else if (text.length < 10) {
+            span.text(text);
+            var width = span.width();
+            $text.css('width', 100);
+        }
+        else {
+            span.text(text);
+            var width = span.width();
+            $text.css('width', 100);
+        }
+    };
+
+
+    (function ($, window) {
+        var arrowWidth = 40;
+
+        $.fn.resizeselect = function (settings) {
+            return this.each(function () {
+
+                $(this).change(function () {
+                    var $this = $(this);
+
+                    var text = $this.find("option:selected").text();
+                    var $select = $("<span>").html(text);
+
+                    $select.appendTo('body');
+                    var width = $select.width();
+                    $select.remove();
+
+                    $this.width(width + arrowWidth);
+
+                }).change();
+
+            });
+        };
+
+        $("select.test").resizeselect();
+
+    })(jQuery, window);
+
     $(document).ready(function () {
-        $("[id^=Time]").timepicker({maxHours: 24, showMeridian: false});
+        $("input[id*=Time i]").timepicker({maxHours: 24, showMeridian: false});
 
         $(".datepicker").datepicker({
             dateFormat: 'd MM yy',
-            // showOn: 'button', 
             //showOn: 'button',
             isBE: true,
             autoConversionField: false,
@@ -122,11 +193,10 @@ foreach ($savepost as $key => $value) {
     })
 
     $(document).ready(function () {
-        $("[id^=Time]").timepicker({maxHours: 24, showMeridian: false});
+        $("input[id*=Time i]").timepicker({maxHours: 24, showMeridian: false});
 
         $(".datepicker_en").datepicker({
             dateFormat: 'd MM yy',
-            // showOn: 'button', 
             //showOn: 'button',
             isCE: true,
             autoConversionField: true,

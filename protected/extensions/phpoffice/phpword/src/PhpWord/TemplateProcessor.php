@@ -1,4 +1,5 @@
 <?php
+
 /**
  * This file is part of PHPWord - A pure PHP library for reading and writing
  * word processing documents.
@@ -25,8 +26,8 @@ use PhpOffice\PhpWord\Exception\Exception;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 use Zend\Stdlib\StringUtils;
 
-class TemplateProcessor
-{
+class TemplateProcessor {
+
     const MAXIMUM_REPLACEMENTS_DEFAULT = -1;
 
     /**
@@ -70,8 +71,7 @@ class TemplateProcessor
      * @throws \PhpOffice\PhpWord\Exception\CreateTemporaryFileException
      * @throws \PhpOffice\PhpWord\Exception\CopyFileException
      */
-    public function __construct($documentTemplate)
-    {
+    public function __construct($documentTemplate) {
         // Temporary document filename initialization
         $this->tempDocumentFilename = tempnam(Settings::getTempDir(), 'PhpWord');
         if (false === $this->tempDocumentFilename) {
@@ -89,14 +89,14 @@ class TemplateProcessor
         $index = 1;
         while (false !== $this->zipClass->locateName($this->getHeaderName($index))) {
             $this->tempDocumentHeaders[$index] = $this->fixBrokenMacros(
-                $this->zipClass->getFromName($this->getHeaderName($index))
+                    $this->zipClass->getFromName($this->getHeaderName($index))
             );
             $index++;
         }
         $index = 1;
         while (false !== $this->zipClass->locateName($this->getFooterName($index))) {
             $this->tempDocumentFooters[$index] = $this->fixBrokenMacros(
-                $this->zipClass->getFromName($this->getFooterName($index))
+                    $this->zipClass->getFromName($this->getFooterName($index))
             );
             $index++;
         }
@@ -111,8 +111,7 @@ class TemplateProcessor
      *
      * @throws \PhpOffice\PhpWord\Exception\Exception
      */
-    protected function transformSingleXml($xml, $xsltProcessor)
-    {
+    protected function transformSingleXml($xml, $xsltProcessor) {
         $domDocument = new \DOMDocument();
         if (false === $domDocument->loadXML($xml)) {
             throw new Exception('Could not load the given XML document.');
@@ -132,8 +131,7 @@ class TemplateProcessor
      *
      * @return mixed
      */
-    protected function transformXml($xml, $xsltProcessor)
-    {
+    protected function transformXml($xml, $xsltProcessor) {
         if (is_array($xml)) {
             foreach ($xml as &$item) {
                 $item = $this->transformSingleXml($item, $xsltProcessor);
@@ -159,8 +157,7 @@ class TemplateProcessor
      *
      * @throws \PhpOffice\PhpWord\Exception\Exception
      */
-    public function applyXslStyleSheet($xslDomDocument, $xslOptions = array(), $xslOptionsUri = '')
-    {
+    public function applyXslStyleSheet($xslDomDocument, $xslOptions = array(), $xslOptionsUri = '') {
         $xsltProcessor = new \XSLTProcessor();
 
         $xsltProcessor->importStylesheet($xslDomDocument);
@@ -178,8 +175,7 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected static function ensureMacroCompleted($macro)
-    {
+    protected static function ensureMacroCompleted($macro) {
         if (substr($macro, 0, 2) !== '#{' && substr($macro, -1) !== '}') {
             $macro = '#{' . $macro . '}';
         }
@@ -192,8 +188,7 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected static function ensureUtf8Encoded($subject)
-    {
+    protected static function ensureUtf8Encoded($subject) {
         if (!StringUtils::isValidUtf8($subject)) {
             $subject = utf8_encode($subject);
         }
@@ -208,8 +203,7 @@ class TemplateProcessor
      *
      * @return void
      */
-    public function setValue($search, $replace, $limit = self::MAXIMUM_REPLACEMENTS_DEFAULT)
-    {
+    public function setValue($search, $replace, $limit = self::MAXIMUM_REPLACEMENTS_DEFAULT) {
         if (is_array($search)) {
             foreach ($search as &$item) {
                 $item = self::ensureMacroCompleted($item);
@@ -241,8 +235,7 @@ class TemplateProcessor
      *
      * @return string[]
      */
-    public function getVariables()
-    {
+    public function getVariables() {
         $variables = $this->getVariablesForPart($this->tempDocumentMainPart);
 
         foreach ($this->tempDocumentHeaders as $headerXML) {
@@ -266,8 +259,7 @@ class TemplateProcessor
      *
      * @throws \PhpOffice\PhpWord\Exception\Exception
      */
-    public function cloneRow($search, $numberOfClones)
-    {
+    public function cloneRow($search, $numberOfClones) {
         if ('#{' !== substr($search, 0, 2) && '}' !== substr($search, -1)) {
             $search = '#{' . $search . '}';
         }
@@ -297,7 +289,7 @@ class TemplateProcessor
                 // If tmpXmlRow doesn't contain continue, this row is no longer part of the spanned row.
                 $tmpXmlRow = $this->getSlice($extraRowStart, $extraRowEnd);
                 if (!preg_match('#<w:vMerge/>#', $tmpXmlRow) &&
-                    !preg_match('#<w:vMerge w:val="continue" />#', $tmpXmlRow)) {
+                        !preg_match('#<w:vMerge w:val="continue" />#', $tmpXmlRow)) {
                     break;
                 }
                 // This row was a spanned row, update $rowEnd and search for the next row.
@@ -324,13 +316,10 @@ class TemplateProcessor
      *
      * @return string|null
      */
-    public function cloneBlock($blockname, $clones = 1, $replace = true)
-    {
+    public function cloneBlock($blockname, $clones = 1, $replace = true) {
         $xmlBlock = null;
         preg_match(
-            '/(<\?xml.*)(<w:p.*>\#{' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\#{\/' . $blockname . '}<\/w:.*?p>)/is',
-            $this->tempDocumentMainPart,
-            $matches
+                '/(<\?xml.*)(<w:p.*>\#{' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\#{\/' . $blockname . '}<\/w:.*?p>)/is', $this->tempDocumentMainPart, $matches
         );
 
         if (isset($matches[3])) {
@@ -342,9 +331,7 @@ class TemplateProcessor
 
             if ($replace) {
                 $this->tempDocumentMainPart = str_replace(
-                    $matches[2] . $matches[3] . $matches[4],
-                    implode('', $cloned),
-                    $this->tempDocumentMainPart
+                        $matches[2] . $matches[3] . $matches[4], implode('', $cloned), $this->tempDocumentMainPart
                 );
             }
         }
@@ -360,19 +347,14 @@ class TemplateProcessor
      *
      * @return void
      */
-    public function replaceBlock($blockname, $replacement)
-    {
+    public function replaceBlock($blockname, $replacement) {
         preg_match(
-            '/(<\?xml.*)(<w:p.*>\#{' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\#{\/' . $blockname . '}<\/w:.*?p>)/is',
-            $this->tempDocumentMainPart,
-            $matches
+                '/(<\?xml.*)(<w:p.*>\#{' . $blockname . '}<\/w:.*?p>)(.*)(<w:p.*\#{\/' . $blockname . '}<\/w:.*?p>)/is', $this->tempDocumentMainPart, $matches
         );
 
         if (isset($matches[3])) {
             $this->tempDocumentMainPart = str_replace(
-                $matches[2] . $matches[3] . $matches[4],
-                $replacement,
-                $this->tempDocumentMainPart
+                    $matches[2] . $matches[3] . $matches[4], $replacement, $this->tempDocumentMainPart
             );
         }
     }
@@ -384,8 +366,7 @@ class TemplateProcessor
      *
      * @return void
      */
-    public function deleteBlock($blockname)
-    {
+    public function deleteBlock($blockname) {
         $this->replaceBlock($blockname, '');
     }
 
@@ -396,8 +377,7 @@ class TemplateProcessor
      *
      * @throws \PhpOffice\PhpWord\Exception\Exception
      */
-    public function save()
-    {
+    public function save() {
         foreach ($this->tempDocumentHeaders as $index => $xml) {
             $this->zipClass->addFromString($this->getHeaderName($index), $xml);
         }
@@ -425,8 +405,7 @@ class TemplateProcessor
      *
      * @return void
      */
-    public function saveAs($fileName)
-    {
+    public function saveAs($fileName) {
         $tempFileName = $this->save();
 
         if (file_exists($fileName)) {
@@ -451,16 +430,13 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected function fixBrokenMacros($documentPart)
-    {
+    protected function fixBrokenMacros($documentPart) {
         $fixedDocumentPart = $documentPart;
 
         $fixedDocumentPart = preg_replace_callback(
-            '|\#[^{]*\{[^}]*\}|U',
-            function ($match) {
-                return strip_tags($match[0]);
-            },
-            $fixedDocumentPart
+                '|\#[^{]*\{[^}]*\}|U', function ($match) {
+            return strip_tags($match[0]);
+        }, $fixedDocumentPart
         );
 
         return $fixedDocumentPart;
@@ -476,8 +452,7 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected function setValueForPart($search, $replace, $documentPartXML, $limit)
-    {
+    protected function setValueForPart($search, $replace, $documentPartXML, $limit) {
         // Note: we can't use the same function for both cases here, because of performance considerations.
         if (self::MAXIMUM_REPLACEMENTS_DEFAULT === $limit) {
             return str_replace($search, $replace, $documentPartXML);
@@ -494,8 +469,7 @@ class TemplateProcessor
      *
      * @return string[]
      */
-    protected function getVariablesForPart($documentPartXML)
-    {
+    protected function getVariablesForPart($documentPartXML) {
         preg_match_all('/\#\{(.*?)}/i', $documentPartXML, $matches);
 
         return $matches[1];
@@ -508,16 +482,14 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected function getHeaderName($index)
-    {
+    protected function getHeaderName($index) {
         return sprintf('word/header%d.xml', $index);
     }
 
     /**
      * @return string
      */
-    protected function getMainPartName()
-    {
+    protected function getMainPartName() {
         return 'word/document.xml';
     }
 
@@ -528,8 +500,7 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected function getFooterName($index)
-    {
+    protected function getFooterName($index) {
         return sprintf('word/footer%d.xml', $index);
     }
 
@@ -542,8 +513,7 @@ class TemplateProcessor
      *
      * @throws \PhpOffice\PhpWord\Exception\Exception
      */
-    protected function findRowStart($offset)
-    {
+    protected function findRowStart($offset) {
         $rowStart = strrpos($this->tempDocumentMainPart, '<w:tr ', ((strlen($this->tempDocumentMainPart) - $offset) * -1));
 
         if (!$rowStart) {
@@ -563,8 +533,7 @@ class TemplateProcessor
      *
      * @return integer
      */
-    protected function findRowEnd($offset)
-    {
+    protected function findRowEnd($offset) {
         return strpos($this->tempDocumentMainPart, '</w:tr>', $offset) + 7;
     }
 
@@ -576,15 +545,14 @@ class TemplateProcessor
      *
      * @return string
      */
-    protected function getSlice($startPosition, $endPosition = 0)
-    {
+    protected function getSlice($startPosition, $endPosition = 0) {
         if (!$endPosition) {
             $endPosition = strlen($this->tempDocumentMainPart);
         }
 
         return substr($this->tempDocumentMainPart, $startPosition, ($endPosition - $startPosition));
     }
-	
+
     public function setValueAdvanced($search_replace) {
         foreach ($this->tempDocumentHeaders as $index => $headerXML) {
             $this->tempDocumentHeaders[$index] = $this->setValueForPartAdvanced($this->tempDocumentHeaders[$index], $search_replace);
@@ -639,6 +607,73 @@ class TemplateProcessor
             preg_match_all($pattern, $string_to_clean, $words_to_concat);
             $cleaned_string = implode("", $words_to_concat[1]);
             $cleaned_string = preg_replace('/[#{}]+/', '', $cleaned_string);
+            array_push($rplCleanedStrings, $cleaned_string);
+        }
+        for ($index = 0; $index < count($rplCleanedStrings); $index++) {
+            foreach ($search_replace as $key_search => $replace) {
+                if ($rplCleanedStrings[$index] == $key_search) {
+                    $documentPartXML = str_replace($stringsToClean[$index], "<w:t>" . $replace . "</w:t>", $documentPartXML);
+                    break;
+                }
+            }
+        }
+        return $documentPartXML;
+    }
+
+    public function setValueAdvance($search_replace) {
+        foreach ($this->tempDocumentHeaders as $index => $headerXML) {
+            $this->tempDocumentHeaders[$index] = $this->setValueForPartAdvanced($this->tempDocumentHeaders[$index], $search_replace);
+        }
+
+        $this->tempDocumentMainPart = $this->setValueForPartAdvanced($this->tempDocumentMainPart, $search_replace);
+
+        foreach ($this->tempDocumentFooters as $index => $headerXML) {
+            $this->tempDocumentFooters[$index] = $this->setValueForPartAdvanced($this->tempDocumentFooters[$index], $search_replace);
+        }
+    }
+
+    protected function setValueForPartAdvance($documentPartXML, $search_replace) {
+        $pattern = '/<w:t>(.*?)<\/w:t>/';
+        $rplStringBeginOffcetsStack = array();
+        $rplStringEndOffcetsStack = array();
+        $rplCleanedStrings = array();
+        $stringsToClean = array();
+        preg_match_all($pattern, $documentPartXML, $words, PREG_OFFSET_CAPTURE);
+
+        $bux_founded = false;
+        $searching_started = false;
+        foreach ($words[1] as $key_of_words => $word) {
+            $exploded_chars = str_split($word[0]);
+            foreach ($exploded_chars as $key_of_chars => $char) {
+                if ($bux_founded) {
+                    if ($searching_started) {
+                        if ($char == "}") {
+                            $bux_founded = false;
+                            $searching_started = false;
+                            array_push($rplStringEndOffcetsStack, ($word[1] + mb_strlen($word[0]) + 6));
+                        }
+                    } else {
+                        if ($char == "{") {
+                            $searching_started = true;
+                        } else {
+                            $bux_founded = false;
+                            array_pop($rplStringBeginOffcetsStack);
+                        }
+                    }
+                } else {
+                    if ($char == "$") {
+                        $bux_founded = true;
+                        array_push($rplStringBeginOffcetsStack, $word[1] - 5);
+                    }
+                }
+            }
+        }
+        for ($index = 0; $index < count($rplStringEndOffcetsStack); $index++) {
+            $string_to_clean = substr($documentPartXML, $rplStringBeginOffcetsStack[$index], ($rplStringEndOffcetsStack[$index] - $rplStringBeginOffcetsStack[$index]));
+            array_push($stringsToClean, $string_to_clean);
+            preg_match_all($pattern, $string_to_clean, $words_to_concat);
+            $cleaned_string = implode("", $words_to_concat[1]);
+            $cleaned_string = preg_replace('/[${}]+/', '', $cleaned_string);
             array_push($rplCleanedStrings, $cleaned_string);
         }
         for ($index = 0; $index < count($rplCleanedStrings); $index++) {

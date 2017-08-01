@@ -6,7 +6,7 @@ class ReadWordController extends Controller {
 	$this->redirect(array('showWord/showword_index', 'FilesID' => $FilesID));
         $model = $this->loadModel($FilesID);
         $writers = array('Word2007' => 'docx', 'ODText' => 'odt', 'RTF' => 'rtf', 'HTML' => 'html');
-        Yii::import('ext.phpword.samples.memoPlusFontStyle', true);
+        Yii::import('ext.phpoffice.phpword.samples.memoPlusFontStyle', true);
 
         $name = basename(__FILE__, '.php');
         $source = __DIR__ . "/resources/{$name}.docx";
@@ -18,7 +18,7 @@ class ReadWordController extends Controller {
 //        $test = write($phpWord, basename(__FILE__, '.php'), $writers);
         $test = '';
 
-        $remote = Yii::getPathOfAlias('ext.phpword.samples.result').'/ReadWordController.html';
+        $remote = Yii::getPathOfAlias('ext.phpoffice.phpword.samples.result').'/ReadWordController.html';
         $local = $dir . '/' . $model->Name . '.html';
         $savehtml = $model->Name . '.html';
 		

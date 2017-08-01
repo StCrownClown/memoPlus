@@ -87,9 +87,10 @@ function NumtoText() {
         money = minus + result;
     }
     if (money.match(/undefined/g)) money = 'กรุณากรอกข้อมูลให้ถูกต้อง';
-    var Num_id = textbox_id.substring(3, 5);
-    var Numtext_id = "Numtext" + Num_id;
-    document.getElementById(Numtext_id).value = money;
+    var num_id = textbox_id.substring(3, 5);
+    var numtext_id = textbox_id.substring(0, 3) + "TEXT" + num_id;
+    var numtext_res = $( "input[id*="+numtext_id+" i]")[0].id;
+    document.getElementById(numtext_res).value = money;
 }
 
 
@@ -198,7 +199,8 @@ function convert() {
     var s = document.getElementById(textbox_id).value;
 	s = "THB " + s;
 	s = s.replace(/,/g, "");
-	var Num_id = textbox_id.substring(5, 7);
-    var Numtext_id = "NumtextEN" + Num_id;
-    document.getElementById(Numtext_id).value = toTextEN.run(s);
+	var num_id = textbox_id.substring(5, 7);
+    var numtext_id = "NumtextEN" + num_id;
+    var numtext_res = $( "input[id*="+numtext_id+" i]")[0].id;
+    document.getElementById(numtext_res).value = toTextEN.run(s);
 }

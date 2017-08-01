@@ -47,59 +47,23 @@ class FilesGenController extends Controller {
                     Yii::import('ext.phpoffice.phpword.samples.memoPlusFontStyle', true);
                     
                     $phpWord = new \PhpOffice\PhpWord\PhpWord();
-                    
-                    $fontStyleName = 'rStyle';
-                    $phpWord->addFontStyle($fontStyleName, array('bold' => true, 'italic' => true, 'size' => 16, 'allCaps' => true, 'doubleStrikethrough' => true));
-
-                    $paragraphStyleName = 'pStyle';
-                    $phpWord->addParagraphStyle($paragraphStyleName, array('alignment' => \PhpOffice\PhpWord\SimpleType\Jc::CENTER, 'spaceAfter' => 100));
-
-                    $rightTabStyleName = 'rightTab';
-                    $phpWord->addParagraphStyle($rightTabStyleName, array('tabs' => array(new \PhpOffice\PhpWord\Style\Tab('right', 9090))));
-
-                    $leftTabStyleName = 'centerTab';
-                    $phpWord->addParagraphStyle($leftTabStyleName, array('tabs' => array(new \PhpOffice\PhpWord\Style\Tab('center', 4680))));
-
-                    $boldFontStyleName = 'BoldText';
-                    $phpWord->addFontStyle($boldFontStyleName, array('bold' => true));
-
-                    $coloredFontStyleName = 'ColoredText';
-                    $phpWord->addFontStyle($coloredFontStyleName, array('color' => 'FF8080', 'bgColor' => 'FFFFCC'));
-                    
-                    $multipleTabsStyleName = 'multipleTab';
-                    $phpWord->addParagraphStyle(
-                        $multipleTabsStyleName,
-                        array(
-                            'tabs' => array(
-                                new \PhpOffice\PhpWord\Style\Tab('left', 1550),
-                                new \PhpOffice\PhpWord\Style\Tab('center', 3200),
-                                new \PhpOffice\PhpWord\Style\Tab('right', 5300),
-                            )
-                        )
-                    );
-
-                    $phpWord->addTitleStyle(1, array('bold' => true), array('spaceAfter' => 240));
-                    $phpWord->addFontStyle('rStyle', array('bold' => true, 'italic' => true, 'size' => 16, 'allCaps' => true, 'doubleStrikethrough' => true));
-                    $phpWord->addParagraphStyle('pStyle', array('align' => 'center', 'spaceAfter' => 100));
-                    $phpWord->addTitleStyle(1, array('bold' => true), array('spaceAfter' => 240));
-                    $phpWord->setDefaultFontName('Times New Roman');
-                    $phpWord->setDefaultFontSize(20);
-                    $phpWord->getDocInfo();
 
                     $phpWord = \PhpOffice\PhpWord\IOFactory::load($dir . '\\' . $model->FilesID . '.docx');
                     $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'HTML');
                     $objWriter->save($dir . '/' . $model->FilesID . '.html', 'HTML');
                     
-                    
                     $templateProcessor = new \PhpOffice\PhpWord\TemplateProcessor($dir . '\\' . $model->FilesID . '.docx');
-                    $search_replace_array = array(
-                        'Value'=>'PHP', #inside a MS Word file ${msword_hello} will change to Hello
-                        'Select'=>'Hello', #${msword_world} will change to World
-                        'Date'=>'World'
-                    );
-                    $templateProcessor->setValueAdvanced($search_replace_array);
-                    $templateProcessor->saveAs($dir . '/' . $model->FilesID . '_new.html');
                     
+//                    $search_replace_array = array(
+//                        'Value'=>'Value01', #inside a MS Word file ${msword_hello} will change to Hello
+//                        'Selecttitle'=>'Selecttitle01' #${msword_world} will change to World
+//                    );
+                    
+//                    $templateProcessor->setValueAdvance($search_replace_array);
+//                    $templateProcessor->saveAs($dir . '/' . $model->FilesID . '_new.html');
+                    
+//                    $templateProcessor->setValueAdvanced($search_replace_array);
+//                    $templateProcessor->saveAs($dir . '/' . $model->FilesID . '_new.html');
 
 //                    echo '<pre>' . print_r($objWriter, true) . '</pre>';die;
                         
@@ -120,7 +84,6 @@ class FilesGenController extends Controller {
 //                    fclose($handle_file);
                     
 //                    echo '<pre>' . print_r($find_pattern, true) . '</pre>';die;
-                    var_dump($templateProcessor);
                     
                     $handle_html = file_get_contents($dir . '/' . $model->FilesID .'.html');
                     $model->texthtml = $handle_html;
@@ -161,7 +124,7 @@ class FilesGenController extends Controller {
                 if ($_POST["FilesGen"]['chkOverwrite'] == '1') {
                     
                 } else {
-                    Yii::import('ext.phpword.samples.memoPlusFontStyle', true);
+                    Yii::import('ext.phpoffice.phpword.samples.memoPlusFontStyle', true);
                     $phpWord = \PhpOffice\PhpWord\IOFactory::load($dir . '/' . $model->FilesID . '.docx');
                     $phpWord->save($dir . '/' . $model->FilesID . '.html', 'HTML');
 
