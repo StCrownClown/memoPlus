@@ -97,6 +97,8 @@ return array(
             '901180',
             // siam
             '002170',
+			//นางสาว จิรัชญา พรหมศิริ  
+			'005777',
         ),
         // this is used in contact page
         'adminEmail' => 'biotec@nstda.or.th',
