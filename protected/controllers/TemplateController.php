@@ -147,22 +147,6 @@ class TemplateController extends Controller {
         foreach ($matches[1] as $value) {
             $templateProcessor->setValue($value, htmlspecialchars("}", ENT_COMPAT, 'UTF-8'));
         }
-        
-//        var_dump($_POST);
-//        echo "</br>";
-//        echo "</br>";
-
-        foreach ($_POST as $key => $value) {
-            echo "</br>";
-            echo $key;
-            echo "</br>";
-            echo $value;
-            echo "</br>";
-//            echo substr($key,-2);
-//            echo "</br>";
-            $templateProcessor->setValue($key, htmlspecialchars($value, ENT_COMPAT, 'UTF-8'));
-        }
-//        die;
 
         $modelSave = new Savefile;
         
