@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This is the model class for table "tbl_user".
  *
@@ -20,7 +19,6 @@ class TblUser extends CActiveRecord
 	{
 		return 'tbl_user';
 	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -30,17 +28,15 @@ class TblUser extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('UserID, fullname, Center, Division, Department', 'required'),
-
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, UserID, fullname, username, Center, Department', 'safe', 'on'=>'search'),
-// 			array('username, password', 'match', 'pattern' => '/^[A-Za-z0-9_]+$/u', 'message' => 'à¸‚à¹‰à¸­à¸¡à¸¹à¸¥à¸•à¹‰à¸­à¸‡à¹€à¸›à¹‡à¸™à¸•à¸±à¸§à¸­à¸±à¸à¸©à¸£à¸«à¸£à¸·à¸­à¸•à¸±à¸§à¹€à¸¥à¸‚à¹€à¸—à¹ˆà¸²à¸™à¸±à¹‰à¸™','on' => 'register'),
+// 			array('username, password', 'match', 'pattern' => '/^[A-Za-z0-9_]+$/u', 'message' => '¢éÍÁÙÅµéÍ§à»ç¹µÑÇÍÑ¡ÉÃËÃ×ÍµÑÇàÅ¢à·èÒ¹Ñé¹','on' => 'register'),
 // 			array('repassword', 'compare', 'compareAttribute' => 'password','on' => 'register'),
-// 			array('username', 'unique', 'className' => 'User', 'message' => '{attribute} "{value}" à¸¡à¸µà¸­à¸¢à¸¹à¹ˆà¹ƒà¸™à¸£à¸°à¸šà¸šà¹à¸¥à¹‰à¸§','on' => 'register'),
+// 			array('username', 'unique', 'className' => 'User', 'message' => '{attribute} "{value}" ÁÕÍÂÙèã¹ÃÐººáÅéÇ','on' => 'register'),
     
 		);
 	}
-
 	/**
 	 * @return array relational rules.
 	 */
@@ -52,7 +48,6 @@ class TblUser extends CActiveRecord
 				'userfiles_ids' => array(self::HAS_MANY, 'Savefile', array('FilesID'=>'FilesID')),
 		);
 	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -68,7 +63,6 @@ class TblUser extends CActiveRecord
 			'Department' => 'Department',
 		);
 	}
-
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *
@@ -84,20 +78,16 @@ class TblUser extends CActiveRecord
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
-
 		$criteria=new CDbCriteria;
-
 		$criteria->compare('UserID',$this->UserID,true);
 		$criteria->compare('fullname',$this->fullname,true);
 		$criteria->compare('Center',$this->Center,true);
 		$criteria->compare('Division',$this->Division,true);
 		$criteria->compare('Department',$this->Department,true);
-
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}
-
    public function validatePassword($password)
     {
         return $password === $this->password;
